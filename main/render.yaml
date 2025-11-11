@@ -1,0 +1,5 @@
+services:
+  web:
+    buildCommand: gunicorn myproject.wsgi
+    staticPublishPath: staticfiles
+    staticPublishPathUrl: /static
