@@ -251,9 +251,10 @@
 </div>
 
 <div id="total-price">Сумма к оплате:  &nbsp;<span id="total-amount"> 0 </span> руб.</div>
-<form action="{% url 'create_payment' %}" method="post">
+<form action="{% url 'create_payment' %}" method="post" id="paymentForm">
   {% csrf_token %}
-<button class="checkout-btn" id="pay-button">Оформить заказ</button>
+  <input type="hidden" name="amount" id="amount">
+  <button class="checkout-btn" id="pay-button">Оформить заказ</button>
 </form>
 
 <!-- Модальное окно -->
@@ -281,11 +282,20 @@
   }
 
   // Обработка оформления заказа
-document.getElementById('pay-button').addEventListener('click', () => {
-  // Очищаем корзину
+document.getElementById('pay-button').addEventListener('click', (e) => {
+  e.preventDefault(); // предотвращаем дефолтную отправку, чтобы установить сумму
+  const totalText = document.getElementById('total-price').innerText; // например, "Сумма к оплате:  1234 руб."
+  const match = totalText.match(/(\d+)/); // ищем число
+  const amount = match ? match[1] : '0';
+
+  document.getElementById('amount').value = amount;
+
+  // Теперь отправляем форму
+  document.getElementById('paymentForm').submit();
+
+  // Очищаем корзину и показываем окно, если нужно
   localStorage.removeItem('cart');
   renderCart();
-  // Показываем сообщение
   showModal();
 });
 

@@ -341,21 +341,23 @@ def product_detail(request, category_slug, product_id):
         raise Http404("Товар не найден")
     return render(request, 'product_detail.html', {'product': product})
 
+@csrf_exempt
 def create_payment(request):
-    Configuration.account_id = settings.YOOKASSA_SHOP_ID
-    Configuration.secret_key = settings.YOOKASSA_SECRET_KEY
-
-    payment = Payment.create({
-        "amount": {
-            "value": "100.00",          # сумма
-            "currency": "RUB"
-        },
-        "confirmation": {
-            "type": "redirect",
-            "return_url": "https://magazin-sport.onrender.com/success/"   # куда вернется после оплаты
-        },
-        "capture": True,
-        "description": "Оплата заказа"
-    })
-
-    return redirect(payment.confirmation.confirmation_url)
+    if request.method == 'POST':
+        amount_value = request.POST.get('amount')
+        Configuration.account_id = settings.YOOKASSA_SHOP_ID
+        Configuration.secret_key = settings.YOOKASSA_SECRET_KEY
+        
+        payment = Payment.create({
+            "amount": {
+                "value": amount_value,
+                "currency": "RUB"
+            },
+            "confirmation": {
+                "type": "redirect",
+                "return_url": "https://magazin-sport.onrender.com/success/"
+            },
+            "capture": True,
+            "description": "Оплата заказа"
+        })
+        return redirect(payment.confirmation.confirmation_url)
