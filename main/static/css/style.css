@@ -1,0 +1,443 @@
+/* Общие стили */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #f0f2f5; /* Светло-серый фон */
+  color: #333;
+}
+
+/* Шапка сайта */
+header {
+  height: 85px; /* Высота шапки */
+  background-color: #ffffff; /* Белый фон */
+  padding: 10px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  border-radius: 25px; /* Закругленные углы всей панели */
+  border: 3px solid #e91e63; /* Более жирная малиновая рамка */
+}
+
+/* Логотип */
+.logo img {
+  width: 120px; /* Размер логотипа */
+  height: auto;
+  /* Смещение логотипа чуть ниже для центрирования */
+  display: flex;
+  align-items: center;
+  margin-top: 4px; /* Меньшее смещение для более точного центрирования */
+}
+
+/* Меню навигации */
+nav.menu {
+  display: flex;
+  align-items: center;
+  padding: 10px 30px;
+  background-color: #fff;
+  border-radius: 20px; /* Полностью округленная навигация */
+  /* рамка убрана, чтобы она была только у всей панели header */
+}
+
+/* Списки меню */
+nav.menu ul {
+  list-style: none;
+  display: flex;
+  gap: 15px;
+  margin: 0;
+  padding: 0;
+}
+
+/* Элементы меню */
+nav.menu li {
+  position: relative;
+}
+
+/* Ссылки меню */
+nav.menu a {
+  text-decoration: none;
+  color: #555; /* Основной цвет */
+  font-weight: 600; /* Сделать названия ярче */
+  padding: 8px 12px;
+  transition: color 0.3s, background-color 0.3s;
+  border-radius: 10px; /* Закругление кнопок/ссылок */
+}
+
+/* hover по меню */
+nav.menu a:hover {
+  color: #e91e63; /* Малиновый при наведении */
+  background-color: #f9f9f9;
+}
+
+/* Подменю */
+.submenu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #ffffff;
+  padding: 10px 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border-radius: 8px; /* Закругленные углы подменю */
+  z-index: 999;
+  min-width: 180px;
+}
+
+/* Показывать подменю при ховере */
+nav.menu li:hover .submenu {
+  display: block;
+}
+
+/* Элементы подменю */
+.submenu a {
+  display: block;
+  padding: 8px 20px;
+  color: #555;
+  font-weight: 400;
+  transition: background-color 0.2s;
+  border-radius: 4px;
+}
+
+/* hover по пунктам подменю */
+.submenu a:hover {
+  background-color: #f1f1f1;
+  color: #e91e63; /* Малиновый при наведении */
+}
+
+/* Иконки и кнопки */
+.header-icons {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* Иконки при наведении */
+.header-icons svg, .header-icons button {
+  cursor: pointer;
+  fill: #555;
+  transition: fill 0.3s;
+}
+
+.header-icons svg:hover, .header-icons button:hover {
+  fill: #e91e63; /* Малиновый при наведении */
+}
+
+/* Бейдж "SALE" */
+.sale-badge {
+  background-color: #e91e63; /* Малиновый */
+  color: #fff;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+    height: auto; /* Высота адаптируется */
+  }
+  nav.menu {
+    width: 100%;
+    flex-direction: column;
+    border-radius: 8px;
+  }
+  nav.menu ul {
+    flex-direction: column;
+    width: 100%;
+  }
+  nav.menu li {
+    width: 100%;
+  }
+  .header-icons {
+    margin-top: 10px;
+  }
+}
+
+/* Подменю */
+.submenu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #ffffff;
+  padding: 10px 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border-radius: 8px; /* Закругленные углы подменю */
+  z-index: 999;
+  min-width: 180px;
+}
+
+/* Показывать подменю при ховере */
+nav.menu li:hover .submenu {
+  display: block;
+}
+
+/* Элементы подменю */
+.submenu a {
+  display: block;
+  padding: 8px 20px;
+  color: #555;
+  font-weight: 400;
+  transition: background-color 0.2s;
+  border-radius: 4px;
+}
+
+/* hover по пунктам подменю */
+.submenu a:hover {
+  background-color: #f1f1f1;
+  color: #e91e63; /* Малиновый при наведении */
+}
+
+/* Иконки и кнопки */
+.header-icons {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* Иконки при наведении */
+.header-icons svg, .header-icons button {
+  cursor: pointer;
+  fill: #555;
+  transition: fill 0.3s;
+}
+
+.header-icons svg:hover, .header-icons button:hover {
+  fill: #e91e63; /* Малиновый при наведении */
+}
+
+/* Бейдж "SALE" */
+.sale-badge {
+  background-color: #e91e63; /* Малиновый */
+  color: #fff;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+    height: auto; /* Высота адаптируется */
+  }
+  nav.menu {
+    width: 100%;
+    flex-direction: column;
+    border-radius: 8px;
+  }
+  nav.menu ul {
+    flex-direction: column;
+    width: 100%;
+  }
+  nav.menu li {
+    width: 100%;
+  }
+  .header-icons {
+    margin-top: 10px;
+  }
+}
+
+/* Подменю */
+.submenu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #ffffff;
+  padding: 10px 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border-radius: 4px;
+  z-index: 999;
+  min-width: 180px;
+}
+
+nav.menu li:hover .submenu {
+  display: block;
+}
+
+.submenu a {
+  display: block;
+  padding: 8px 20px;
+  color: #555;
+  font-weight: 400;
+  transition: background-color 0.2s;
+}
+
+.submenu a:hover {
+  background-color: #f1f1f1;
+  color: #e91e63; /* Малиновый при наведении */
+}
+
+/* Элементы навигационной панели (иконки) */
+.header-icons {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.header-icons svg, .header-icons button {
+  cursor: pointer;
+  fill: #555;
+  transition: fill 0.3s;
+}
+
+.header-icons svg:hover, .header-icons button:hover {
+  fill: #e91e63; /* Малиновый при наведении */
+}
+
+/* Кнопка "SALE" */
+.sale-badge {
+  background-color: #e91e63; /* Малиновый */
+  color: #fff;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  nav.menu {
+    width: 100%;
+    flex-direction: column;
+  }
+  nav.menu ul {
+    flex-direction: column;
+    width: 100%;
+  }
+  nav.menu li {
+    width: 100%;
+  }
+  .header-icons {
+    margin-top: 10px;
+  }
+}
+
+/* Подменю */
+.submenu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  border-radius: 4px;
+  min-width: 180px;
+  z-index: 1000;
+  flex-direction: column;
+}
+
+li:hover .submenu {
+  display: flex;
+}
+
+/*баннер */
+/* Обновленный стиль для слайдера */
+.slider {
+  width: 100%;
+  height: 450px; /* или 500px, по вашему желанию */
+  background-image: url('{% static "img/banner_3.JFIF" %}');
+  background-size: cover;
+  background-position: center;
+  border-radius: 8px;
+  margin-top: 20px;
+  transition: background-image 1s ease-in-out;
+}
+
+/* Категории (блоки с изображениями) */
+.categories {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  padding: 30px 20px;
+  background-color: #fff;
+}
+
+.category {
+  position: relative;
+  width: 220px;
+  height: 300px;
+  overflow: hidden;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.category img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s;
+}
+
+.category:hover img {
+  transform: scale(1.05);
+}
+
+.category:hover {
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+
+/* Названия категорий */
+.category span {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  color: #fff;
+  background-color: rgba(0,0,0,0.5);
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+/* Футер */
+footer {
+  background-color: #1a1a1a;
+  color: #fff;
+  text-align: center;
+  padding: 20px;
+  margin-top: 40px;
+  font-size: 14px;
+}
+
+/* Адаптивность */
+@media(max-width: 768px) {
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  nav.menu {
+    width: 100%;
+  }
+  nav.menu ul {
+    flex-direction: column;
+    width: 100%;
+  }
+  .categories {
+    flex-direction: column;
+    align-items: center;
+  }
+  .category {
+    width: 90%;
+  }
+}

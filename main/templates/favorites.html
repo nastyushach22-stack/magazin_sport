@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Мои избранные товары</title>
+<!-- Шрифты и стили -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<style>
+  body {
+    font-family: 'Poppins', sans-serif;
+    padding: 20px;
+    background-color: #f0f2f5;
+  }
+  h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+  }
+  #favorites-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+  }
+  .favorite-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    width: 250px;
+    padding: 15px;
+    position: relative;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .favorite-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  }
+  .favorite-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: contain;
+    border-radius: 8px;
+  }
+  .product-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 10px;
+  }
+  .product-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #333;
+  }
+  .product-price {
+    color: #ed457e; /* Малиновый цвет */
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  /* Стиль кнопки "Добавить в корзину" — яркая */
+  .btn-cart {
+    background-color: #ed457e;
+    color: #fff;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 300;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s;
+  }
+  .btn-cart:hover {
+    background-color: #d7416b;
+  }
+  /* Счетчик и кнопки + - */
+  .quantity-controls {
+    display: none; /* по умолчанию скрыт */
+    margin-top: 10px;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .quantity-controls.active {
+    display: flex;
+  }
+  .quantity-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    padding: 0 10px;
+    cursor: pointer;
+    color: #555;
+  }
+  .quantity-btn:hover {
+    color: #000;
+    transform: scale(1.2);
+  }
+  .quantity-number {
+    font-size: 14px;
+    font-weight: 300;
+    padding: 0 10px;
+    min-width: 20px;
+    text-align: center;
+  }
+  /* Иконка сердечка */
+  .favorite {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+  }
+  .favorite svg {
+    width: 100%;
+    height: 100%;
+    fill: red;
+    transition: transform 0.2s;
+  }
+  .favorite:hover svg {
+    transform: scale(1.2);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  {% include 'baze.html' %}
+</header>
+
+<h1>Мои избранные товары</h1>
+<div id="favorites-container"></div>
+
+<script src="{% static 'js/script.js' %}"></script>
+<script>
+  // функция рендеринга избранных товаров
+  function renderFavorites() {
+    const container = document.getElementById('favorites-container');
+    container.innerHTML = '';
+
+    const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+    if (favorites.length === 0) {
+      container.innerHTML = '<p style="text-align:center; font-size:18px; color:#555;">Нет избранных товаров.</p>';
+      return;
+    }
+
+    favorites.forEach(p => {
+      let currentCount = p.count || 1;
+      let addedToCart = false;
+
+      const card = document.createElement('div');
+      card.className = 'favorite-card';
+
+      card.innerHTML = `
+        <div class="favorite" title="Удалить из избранных">
+          <svg class="heart-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 
+                     4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3
+                     19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+          </svg>
+        </div>
+        <img src="${p.img}" alt="${p.name}">
+        <div class="product-info">
+          <div class="product-title">${p.name}</div>
+          <div class="product-price">${p.price}</div>
+        </div>
+        <div class="buttons">
+          <button class="btn btn-cart">Добавить в корзину</button>
+        </div>
+        <div class="quantity-controls" style="margin-top:10px;">
+          <button class="quantity-btn minus">-</button>
+          <div class="quantity-number">${currentCount}</div>
+          <button class="quantity-btn plus">+</button>
+        </div>
+      `;
+
+      // Удаление из избранных
+      card.querySelector('.favorite').addEventListener('click', () => {
+        let favs = JSON.parse(localStorage.getItem('favorites')) || [];
+        favs = favs.filter(item => item.name !== p.name);
+        localStorage.setItem('favorites', JSON.stringify(favs));
+        renderFavorites();
+      });
+
+      const btnAdd = card.querySelector('.btn-cart');
+      const quantityDiv = card.querySelector('.quantity-controls');
+      const quantityNumber = card.querySelector('.quantity-number');
+
+      // Обработка "Добавить в корзину"
+      btnAdd.addEventListener('click', () => {
+        addedToCart = true;
+        quantityDiv.classList.add('active');
+        btnAdd.style.display = 'none';
+        currentCount = 1;
+        quantityNumber.textContent = currentCount;
+        updateFavoriteCount(p.name, currentCount);
+      });
+
+      // "+" увеличивает счетчик
+      const plusBtn = card.querySelector('.plus');
+      plusBtn.addEventListener('click', () => {
+        currentCount++;
+        quantityNumber.textContent = currentCount;
+        updateFavoriteCount(p.name, currentCount);
+      });
+
+      // "-" уменьшает счетчик
+      const minusBtn = card.querySelector('.minus');
+      minusBtn.addEventListener('click', () => {
+        if (currentCount > 1) {
+          currentCount--;
+          quantityNumber.textContent = currentCount;
+          updateFavoriteCount(p.name, currentCount);
+        } else {
+          currentCount = 1;
+          quantityNumber.textContent = currentCount;
+          addedToCart = false;
+          btnAdd.style.display = 'block';
+          quantityDiv.classList.remove('active');
+          updateFavoriteCount(p.name, currentCount);
+        }
+      });
+
+      container.appendChild(card);
+    });
+  }
+
+  function updateFavoriteCount(name, count) {
+    let favs = JSON.parse(localStorage.getItem('favorites')) || [];
+    const index = favs.findIndex(item => item.name === name);
+    if (index !== -1) {
+      favs[index].count = count;
+      localStorage.setItem('favorites', JSON.stringify(favs));
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    renderFavorites();
+
+    // Обработчик для "Добавить в корзину" — делегирование
+    document.getElementById('favorites-container').addEventListener('click', (e) => {
+      if (e.target.classList.contains('btn-cart')) {
+        const card = e.target.closest('.favorite-card');
+        const name = card.querySelector('.product-title').textContent;
+        const imgSrc = card.querySelector('img').getAttribute('src');
+        const favs = JSON.parse(localStorage.getItem('favorites')) || [];
+        const product = favs.find(p => p.name === name);
+        if (!product) return;
+
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const existingIndex = cart.findIndex(i => i.name === name);
+        if (existingIndex !== -1) {
+          cart[existingIndex].count += product.count || 1;
+        } else {
+          cart.push({
+            name: product.name,
+            price: product.price,
+            img: product.img,
+            count: product.count || 1
+          });
+        }
+        localStorage.setItem('cart', JSON.stringify(cart));
+        alert(`Товар "${name}" добавлен в корзину!`);
+      }
+    });
+  });
+</script>
+</body>
+</html>
