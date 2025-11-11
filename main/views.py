@@ -1,5 +1,5 @@
 #views.py
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from yookassa import Configuration, Payment
 from django.conf import settings
 from .data import products_data
