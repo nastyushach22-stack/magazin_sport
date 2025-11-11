@@ -1,6 +1,7 @@
 #urls.py
 from django.urls import path
 from . import views
+from .views import create_payment
 
 urlpatterns = [
     path('', views.index, name='home'),
@@ -25,4 +26,7 @@ urlpatterns = [
     path('cart/', views.cart, name='cart'),
     # Страница товаров
     path('<str:category_slug>/<int:product_id>/', views.product_detail, name='product_detail'),
+    #оплата
+    path('pay/', create_payment, name='create_payment'),
+    path('success/', lambda r: HttpResponse("Оплата успешно завершена!"), name='success'),
 ]

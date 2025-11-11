@@ -251,7 +251,10 @@
 </div>
 
 <div id="total-price">Сумма к оплате:  &nbsp;<span id="total-amount"> 0 </span> руб.</div>
+<form action="{% url 'create_payment' %}" method="post">
+  {% csrf_token %}
 <button class="checkout-btn" id="pay-button">Оформить заказ</button>
+</form>
 
 <!-- Модальное окно -->
 <div id="orderModal" class="modal">
@@ -291,12 +294,11 @@ function updatePickupAddress() {
   // Можно добавить логику для отображения выбранного адреса
 }
 
-// Функция для отображения корзины
 function renderCart() {
   const container = document.getElementById('cart-container');
   container.innerHTML = '';
-
   const cart = JSON.parse(localStorage.getItem('cart')) || [];
+  
   if (cart.length === 0) {
     container.innerHTML = '<p style="text-align:center;">Ваша корзина пуста.</p>';
     document.getElementById('total-amount').textContent = '0';
@@ -304,6 +306,7 @@ function renderCart() {
   }
 
   let totalSum = 0;
+  
   cart.forEach(item => {
     const priceNumber = parseInt(item.price.replace(/\D/g, '')) || 0;
     const itemTotal = item.count * priceNumber;
@@ -316,34 +319,35 @@ function renderCart() {
       <img src="${item.img}" alt="${item.name}">
       <div class="item-info">
         <div class="item-title">${item.name}</div>
-        <div class="item-price">Цена:  ${item.price}</div>
-        <div class="item-total">Итого:  ${itemTotal} руб.</div>
+        <div class="item-size">Размер: ${item.size}</div>
+        <div class="item-price">Цена: ${item.price}</div>
+        <div class="item-total">Итого: ${itemTotal} руб.</div>
         <div class="quantity-controls">
-          <button class="quantity-btn minus" data-name="${item.name}">-</button>
+          <button class="quantity-btn minus" data-name="${item.name}" data-size="${item.size}">-</button>
           <div class="quantity-number">${item.count}</div>
-          <button class="quantity-btn plus" data-name="${item.name}">+</button>
-          <button class="remove-btn" data-name="${item.name}">&times;</button>
+          <button class="quantity-btn plus" data-name="${item.name}" data-size="${item.size}">+</button>
+          <button class="remove-btn" data-name="${item.name}" data-size="${item.size}">&times;</button>
         </div>
       </div>
     `;
-    // Обработчики
-    div.querySelector('.plus').addEventListener('click', () => {
-      changeQuantity(item.name, 1);
-    });
-    div.querySelector('.minus').addEventListener('click', () => {
-      changeQuantity(item.name, -1);
-    });
-    div.querySelector('.remove-btn').addEventListener('click', () => {
-      removeItem(item.name);
-    });
+
+    // Обработчики кнопок
+    div.querySelector('.plus').addEventListener('click', e => changeQuantity(e, 1));
+    div.querySelector('.minus').addEventListener('click', e => changeQuantity(e, -1));
+    div.querySelector('.remove-btn').addEventListener('click', e => removeItem(e));
+
     container.appendChild(div);
   });
+
   document.getElementById('total-amount').textContent = totalSum;
 }
 
-function changeQuantity(name, delta) {
+// Изменение количества
+function changeQuantity(e, delta) {
+  const name = e.target.dataset.name;
+  const size = e.target.dataset.size;
   let cart = JSON.parse(localStorage.getItem('cart')) || [];
-  const index = cart.findIndex(i => i.name === name);
+  const index = cart.findIndex(i => i.name === name && i.size === size);
   if (index !== -1) {
     cart[index].count += delta;
     if (cart[index].count < 1) cart[index].count = 1;
@@ -352,17 +356,18 @@ function changeQuantity(name, delta) {
   }
 }
 
-function removeItem(name) {
+// Удаление товара
+function removeItem(e) {
+  const name = e.target.dataset.name;
+  const size = e.target.dataset.size;
   let cart = JSON.parse(localStorage.getItem('cart')) || [];
-  cart = cart.filter(i => i.name !== name);
+  cart = cart.filter(i => !(i.name === name && i.size === size));
   localStorage.setItem('cart', JSON.stringify(cart));
   renderCart();
 }
 
-// Инициализация корзины при загрузке
-document.addEventListener('DOMContentLoaded', () => {
-  renderCart();
-});
+// Инициализация корзины при загрузке страницы
+document.addEventListener('DOMContentLoaded', renderCart);
 </script>
 
 </body>

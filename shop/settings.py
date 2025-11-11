@@ -102,3 +102,6 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+YOOKASSA_SHOP_ID = '1197330'
+YOOKASSA_SECRET_KEY = 'test_HK_gZ-cQ7wORqrIKCw22ytzwTPzifhUdPfyLUwSSHHc'

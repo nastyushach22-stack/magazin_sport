@@ -167,6 +167,29 @@ h3 {
 .characteristics-details {
   margin-top: 20px; /* одна пустая строка */
 }
+.sizes-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+.size-option {
+  padding: 8px 14px;
+  border: 2px solid #c7c7c7;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: 0.25s;
+  user-select: none;
+}
+.size-option:hover {
+  border-color: #e22262d3;
+}
+.size-option.active {
+  background: #e22262d3;
+  color: white;
+  border-color: #e22262d3;
+}
 </style>
 </head>
 <body>
@@ -205,70 +228,75 @@ h3 {
       <section>
         <h3>Характеристики</h3>
         <div class="content-box">{{ product.characteristics|safe }}</div>
-
       </section>
 
       <section>
-        <h3>Размерная сетка</h3>
-        <div class="content-box">{{ product.size_chart|safe }}</div>
+        <h3>Размеры</h3>
+        <div class="sizes-row">
+          {% for size in product.sizes %}
+          <div class="size-option" onclick="selectSize(this)">
+            {{ size }}
+          </div>
+          {% endfor %}
+        </div>
       </section>
     </div>
     <!-- Кнопки -->
-     <div class="buttons" style="margin-top:20px; display:flex; gap:20px;">
-  <!-- Серая кнопка -->
-  <button id="add-to-cart-btn"
-    style="
-      flex:1;
-      position:relative;
-      width:100%;
-      padding:15px 20px;
-      font-size:16px;
-      border-radius:8px;
-      border:none;
-      cursor:pointer;
-      background:#e0e0e0;
-      color:#222;
-      font-weight:bold;
-      overflow:hidden;
-    ">
-    
-    <!-- текст -->
-    <span id="btn-text"
-      style="
-        position:absolute;
-        top:50%;
-        left:50%;
-        transform:translate(-50%, -50%);
-        transition:opacity 0.2s ease;
-      ">
-      Добавить в корзину
-    </span>
+    <div class="buttons" style="margin-top:20px; display:flex; gap:20px;">
+      <!-- Серая кнопка -->
+      <button id="add-to-cart-btn"
+        style="
+          flex:1;
+          position:relative;
+          width:100%;
+          padding:15px 20px;
+          font-size:16px;
+          border-radius:8px;
+          border:none;
+          cursor:pointer;
+          background:#e0e0e0;
+          color:#222;
+          font-weight:bold;
+          overflow:hidden;
+        ">
+        <!-- текст -->
+        <span id="btn-text"
+          style="
+            position:absolute;
+            top:50%;
+            left:50%;
+            transform:translate(-50%, -50%);
+            transition:opacity 0.2s ease;
+          ">
+          Добавить в корзину
+        </span>
 
-    <!-- счётчик -->
-    <div id="quantity-controls"
-      style="
-        position:absolute;
-        top:50%;
-        left:50%;
-        transform:translate(-50%, -50%);
-        display:none;
-        align-items:center;
-        justify-content:center;
-        gap:10px;
-        opacity:0;
-        transition:opacity 0.2s ease;
-      ">
-      <span id="decrease"
-        style="font-size:20px; width:30px; height:30px; cursor:pointer; user-select:none;">−</span>
-      <span id="counter" style="min-width:20px; text-align:center; font-weight:bold;">1</span>
-      <span id="increase"
-        style="font-size:20px; width:30px; height:30px; cursor:pointer; user-select:none;">+</span>
+        <!-- счётчик -->
+        <div id="quantity-controls"
+          style="
+            position:absolute;
+            top:50%;
+            left:50%;
+            transform:translate(-50%, -50%);
+            display:none;
+            align-items:center;
+            justify-content:center;
+            gap:10px;
+            opacity:0;
+            transition:opacity 0.2s ease;
+          ">
+          <span id="decrease"
+            style="font-size:20px; width:30px; height:30px; cursor:pointer; user-select:none;">−</span>
+          <span id="counter" style="min-width:20px; text-align:center; font-weight:bold;">1</span>
+          <span id="increase"
+            style="font-size:20px; width:30px; height:30px; cursor:pointer; user-select:none;">+</span>
+        </div>
+      </button>
+
+      <!-- Вторая кнопка -->
+      <button id="buy-now-btn" class="btn btn-primary" style="flex:1;">Купить сейчас</button>
     </div>
-  </button>
-
-  <!-- Вторая кнопка -->
-  <button id="buy-now-btn" class="btn btn-primary" style="flex:1;">Купить сейчас</button>
-</div>
+  </div>
 </div>
 
 <!-- Модальное окно для увеличенного изображения -->
@@ -277,92 +305,71 @@ h3 {
 </div>
 
 <script>
-function changeMainImage(src) {
-  document.getElementById('mainImage').src = src;
+let count = 1;
+let isAdded = false;
+let selectedSize = null;
+
+// Обработчик выбора размера
+function selectSize(element) {
+  document.querySelectorAll('.size-option').forEach(opt => opt.classList.remove('active'));
+  element.classList.add('active');
+  selectedSize = element.textContent.trim();
 }
-function openModal(src) {
-  document.getElementById('imgModal').style.display = 'flex';
-  document.querySelector('#imgModal img').src = src;
-}
-function closeModal() {
-  document.getElementById('imgModal').style.display = 'none';
-}
 
-const thumbnails = document.querySelectorAll('.thumbnail');
-thumbnails.forEach(div => {
-  div.addEventListener('click', () => {
-    changeMainImage(div.children[0].src);
-  });
-});
-document.querySelector('.main-image').addEventListener('click', () => {
-  openModal(document.querySelector('.main-image').src);
-});
-
-// Обработчик для кнопки "Добавить в корзину"
-document.getElementById('add-to-cart-btn').addEventListener('click', () => {
-  const name = "{{ product.name|escapejs }}";
-  const img = "{% static product.photos.0 %}";
-  const price = "{{ product.price }}";  // например, "1500 ₽"
-  const quantity = count; // выбранное количество
-
-  let cart = JSON.parse(localStorage.getItem('cart')) || [];
-  const existingIndex = cart.findIndex(item => item.name === name);
-  if (existingIndex >= 0) {
-    // если товар есть, увеличиваем количество
-    cart[existingIndex].count += quantity;
-  } else {
-    // если нет, добавляем новый
-    cart.push({ name, img, price, count: quantity });
-  }
-  localStorage.setItem('cart', JSON.stringify(cart));
-  renderCart(); // предполагается, что есть функция отображения корзины
-});
-
-// обработчик для "Купить сейчас"
-document.getElementById('buy-now-btn').addEventListener('click', () => {
-  const name = "{{ product.name|escapejs }}";
-  const img = "{% static product.photos.0 %}";
-  const price = "{{ product.price }}";
-  const quantity = count;
-
-  let cart = JSON.parse(localStorage.getItem('cart')) || [];
-  const existingIndex = cart.findIndex(item => item.name === name);
-  if (existingIndex >= 0) {
-    cart[existingIndex].count += quantity;
-  } else {
-    cart.push({ name, img, price, count: quantity });
-  }
-  localStorage.setItem('cart', JSON.stringify(cart));
-
-  // перенаправление на страницу корзины
-  window.location.href = "/cart/"; // укажите правильный путь
-});
-
+// Объявляем переменные
 const btn = document.getElementById('add-to-cart-btn');
 const btnText = document.getElementById('btn-text');
-const counter = document.getElementById('counter');
 const quantityControls = document.getElementById('quantity-controls');
+const counter = document.getElementById('counter');
 const increaseBtn = document.getElementById('increase');
 const decreaseBtn = document.getElementById('decrease');
 
-let count = 1;
-let isAdded = false;
+// Обновление корзины
+function updateCart() {
+  if (!selectedSize) {
+    alert('Пожалуйста, выберите размер!');
+    return;
+  }
+  const name = "{{ product.name|escapejs }}";
+  const img = "{% static product.photos.0 %}";
+  const price = "{{ product.price }}";
 
-// Обработчик для "Добавить в корзину"
+  let cart = JSON.parse(localStorage.getItem('cart')) || [];
+  const index = cart.findIndex(i => i.name === name && i.size === selectedSize);
+
+  if (count > 0) {
+    if (index >= 0) {
+      cart[index].count = count;
+    } else {
+      cart.push({ name, img, price, size: selectedSize, count });
+    }
+  } else {
+    if (index >= 0) {
+      cart.splice(index, 1);
+    }
+  }
+  localStorage.setItem('cart', JSON.stringify(cart));
+}
+
+// Обработчик кнопки "Добавить в корзину"
 btn.addEventListener('click', () => {
-  if (isAdded) return;
-  isAdded = true;
-
-  // Плавное переключение
-  btnText.style.opacity = '0';
-  setTimeout(() => {
-    btnText.style.display = 'none';
-    quantityControls.style.display = 'flex';
-    quantityControls.style.opacity = '1';
-  }, 200);
-
-  counter.textContent = count;
-  updateCart();
+  if (!selectedSize) {
+    alert('Пожалуйста, выберите размер!');
+    return;
+  }
+  if (!isAdded) {
+    isAdded = true;
+    btnText.style.opacity = '0';
+    setTimeout(() => {
+      btnText.style.display = 'none';
+      quantityControls.style.display = 'flex';
+      setTimeout(() => {
+        quantityControls.style.opacity = '1';
+      }, 10);
+    }, 200);
+    counter.textContent = count;
+    updateCart();
+  }
 });
 
 // Увеличение количества
@@ -379,11 +386,11 @@ decreaseBtn.addEventListener('click', () => {
     counter.textContent = count;
     updateCart();
   } else if (count === 1) {
-    // Когда счетчик равен 1 и пользователь нажимает "-"
-    // возвращаем кнопку "Добавить в корзину"
+    count = 0;
+    updateCart();
+    // Возврат кнопки
     isAdded = false;
-    count = 1; // оставить 1
-    // скрываем счетчик и показываем кнопку
+    count = 1;
     quantityControls.style.opacity = '0';
     setTimeout(() => {
       quantityControls.style.display = 'none';
@@ -392,33 +399,31 @@ decreaseBtn.addEventListener('click', () => {
         btnText.style.opacity = '1';
       }, 10);
     }, 200);
-    updateCart(); // удаляем товар из корзины
   }
 });
 
-// Обновление корзины
-function updateCart() {
+// Купить сейчас
+document.getElementById('buy-now-btn').addEventListener('click', () => {
+  if (!selectedSize) {
+    alert('Пожалуйста, выберите размер!');
+    return;
+  }
   const name = "{{ product.name|escapejs }}";
   const img = "{% static product.photos.0 %}";
   const price = "{{ product.price }}";
-  let cart = JSON.parse(localStorage.getItem('cart')) || [];
-  const existingIndex = cart.findIndex(i => i.name === name);
 
-  if (count > 0) {
-    if (existingIndex >= 0) {
-      cart[existingIndex].count = count;
-    } else {
-      cart.push({ name, img, price, count });
-    }
+  let cart = JSON.parse(localStorage.getItem('cart')) || [];
+  const index = cart.findIndex(i => i.name === name && i.size === selectedSize);
+
+  if (index >= 0) {
+    cart[index].count = 1;
   } else {
-    if (existingIndex >= 0) {
-      cart.splice(existingIndex, 1);
-    }
-    count = 1;
+    cart.push({ name, img, price, size: selectedSize, count: 1 });
   }
 
   localStorage.setItem('cart', JSON.stringify(cart));
-}
+  window.location.href = "/cart/";
+});
 </script>
 
 </body>
