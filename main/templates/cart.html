@@ -5,6 +5,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Моя корзина</title>
+<link rel="icon" href="{% static 'img/logo3.png' %}" type="image/png" />
 <!-- Шрифты и стили -->
 <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet" />
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
@@ -100,37 +101,36 @@
   margin: 0 auto;
   position: relative; 
   display: flex;
-  justify-content: flex-end; /* Выравниваем содержимое по правому краю */
+  justify-content: flex-end;
   background: linear-gradient(to right, #ffffff, #ed457e); /* Градиент слева направо, более темный справа */
-  text-align: right; /* Выравниваем весь текст по правому краю внутри блока */
-  }
-  .checkout-btn {
-    display: block;
-    width: 200px;
-    margin: 30px auto 0;
-    padding: 15px;
-    background-color: #ed457e;
-    color: #fff;
-    border: none;
-    border-radius: 12px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  .checkout-btn:hover {
-    background-color: #d7416b;
+  text-align: right;
+
+.checkout-btn {
+  display: block;
+  width: 200px;
+  margin: 30px auto 0;
+  padding: 15px;
+  background-color: #ed457e;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+.checkout-btn:hover {
+  background-color: #d7416b;
+}
+
+/* Стиль для блока выбора пункта выдачи */
+.cart-page-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
   }
 
-  /* Стиль для блока выбора пункта выдачи */
-  .cart-page-container {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 20px;
-    box-sizing: border-box;
-  }
-
-  /* Стиль для блока выбора пункта выдачи */
-  .pickup-wrapper {
+.pickup-wrapper {
   width: 100%;
   display: flex;
   align-items: center;
@@ -138,11 +138,10 @@
   margin-bottom: 20px;
   font-family: 'Poppins', sans-serif;
   padding: 10px;
-  background-color: #fff; /* белый фон для отделения */
+  background-color: #fff;
   border-radius: 8px; /* скругление углов */
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* небольшой тень */
-  border: 1px solid #ddd; /* граница */
-  }
+  border: 1px solid #ddd;
+}
 
 .pickup-label {
   font-weight: 600;
@@ -156,7 +155,7 @@
   padding: 10px 14px;
   border-radius: 8px;
   border: 2px solid #b9b9b9ff;
-  background-color: #ffffff; /* фон делается белым */
+  background-color: #ffffff;
   font-family: 'Poppins', sans-serif;
   font-size: 14px;
   cursor: pointer;
@@ -274,7 +273,7 @@
 </div>
 
 <script>
-  // Показывать модальное окно
+
   function showModal() {
   document.getElementById('orderModal').style.display = 'block';
 }
@@ -284,11 +283,11 @@ function closeModal() {
 }
 function updatePickupAddress() {
     const select = document.getElementById('pickup-location');
-    const address = select.options[select.selectedIndex].text; // берем текст выбранной опции
+    const address = select.options[select.selectedIndex].text;
     document.getElementById('pickup-address').innerText = address;
   }
 
-  // Можно вызвать эту функцию при загрузке страницы, чтобы сразу показать выбранный адрес
+
   document.addEventListener('DOMContentLoaded', () => {
     updatePickupAddress();
   });
@@ -300,7 +299,7 @@ window.onclick = function(event) {
   }
 };
 
-// === Работа корзины ===
+// Корзина
 function renderCart() {
   const container = document.getElementById('cart-container');
   container.innerHTML = '';
@@ -369,7 +368,7 @@ function removeItem(e) {
   renderCart();
 }
 
-// === Кнопка оплаты ===
+// Кнопка оплаты
 document.getElementById('pay-button').addEventListener('click', (e) => {
   e.preventDefault();
 
@@ -378,18 +377,31 @@ document.getElementById('pay-button').addEventListener('click', (e) => {
   const amount = match ? match[1] : '0';
   document.getElementById('amount').value = amount;
 
-  // Просто отправляем форму — модалка появится только после возврата
+  // Сохраняем выбранный пункт выдачи
+  const select = document.getElementById('pickup-location');
+  const selectedAddress = select.options[select.selectedIndex].text; 
+  localStorage.setItem('pickupAddress', selectedAddress);
+
+  // Отправляем форму на оплату
   document.getElementById('paymentForm').submit();
 });
 
-// === Проверка URL при возврате ===
+// Проверка URL при возврате
 document.addEventListener('DOMContentLoaded', () => {
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.get('order') === '1') {
     localStorage.removeItem('cart'); // очищаем корзину
-    renderCart();                    // перерисовываем
-    showModal();                     // показываем модалку
-    history.replaceState(null, '', window.location.pathname); // убираем ?order=1
+    renderCart();
+
+
+    const savedAddress = localStorage.getItem('pickupAddress');
+    if (savedAddress) {
+      document.getElementById('pickup-address').innerText = savedAddress;
+      localStorage.removeItem('pickupAddress'); // очищаем после показа
+    }
+
+    showModal(); // показываем модалку
+    history.replaceState(null, '', window.location.pathname);
   } else {
     renderCart();
   }
