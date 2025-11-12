@@ -282,7 +282,16 @@
 function closeModal() {
   document.getElementById('orderModal').style.display = 'none';
 }
+function updatePickupAddress() {
+    const select = document.getElementById('pickup-location');
+    const address = select.options[select.selectedIndex].text; // берем текст выбранной опции
+    document.getElementById('pickup-address').innerText = address;
+  }
 
+  // Можно вызвать эту функцию при загрузке страницы, чтобы сразу показать выбранный адрес
+  document.addEventListener('DOMContentLoaded', () => {
+    updatePickupAddress();
+  });
 document.getElementById('closeModal').addEventListener('click', closeModal);
 
 window.onclick = function(event) {
