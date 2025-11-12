@@ -29,4 +29,5 @@ urlpatterns = [
     #оплата
     path('pay/', create_payment, name='create_payment'),
     path('success/', lambda r: HttpResponse("Оплата успешно завершена!"), name='success'),
+    path('success/', views.success, name='payment_success'),
 ]

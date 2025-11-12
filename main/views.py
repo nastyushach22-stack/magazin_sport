@@ -8,6 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 import uuid
 import traceback
+from .models import Order
 
 def index(request):
     products = [
@@ -361,3 +362,7 @@ def create_payment(request):
             "description": "Оплата заказа"
         })
         return redirect(payment.confirmation.confirmation_url)
+
+def success(request):
+    # Эта страница просто перенаправит обратно на корзину с параметром
+    return redirect('/cart/?order=1')  # замените на актуальный URL вашей корзины

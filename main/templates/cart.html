@@ -144,14 +144,14 @@
   border: 1px solid #ddd; /* граница */
   }
 
-  .pickup-label {
-    font-weight: 600;
-    font-size: 14px;
-    color: #333;
-    min-width: 120px;
-  }
+.pickup-label {
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+  min-width: 120px;
+}
 
-  .pickup-select {
+.pickup-select {
   flex: 1;
   padding: 10px 14px;
   border-radius: 8px;
@@ -163,11 +163,11 @@
   transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-  .pickup-select:hover {
-    border-color: #c2185b;
-    box-shadow: 0 0 8px rgba(233, 30, 99, 0.2);
-  }
-  .custom-select {
+.pickup-select:hover {
+  border-color: #c2185b;
+  box-shadow: 0 0 8px rgba(233, 30, 99, 0.2);
+}
+.custom-select {
   background: #b0b0b0; /* матово-серый фон */
   border: 2px solid #e91e63;
   border-radius: 8px;
@@ -178,8 +178,8 @@
   justify-content: space-between;
   align-items: center;
   transition: background 0.2s;
-  }
-  .custom-options {
+}
+.custom-options {
   position: absolute;
   top: 100%;
   left: 0;
@@ -192,44 +192,51 @@
   overflow-y: auto;
   z-index: 999;
   display: none; /* по умолчанию скрыт */
-  }
+}
 
-  /* Модальное окно */
-  .modal {
-    display: none;
-    position: fixed;
-    z-index: 9999;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.4);
-  }
-  .modal-content {
-    background-color: #fff;
-    margin: 15% auto;
-    padding: 20px;
-    border-radius: 10px;
-    max-width: 400px;
-    position: relative;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    text-align: center;
-    font-size: 20px;
-  }
-  .close {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 24px;
-    font-weight: bold;
-    color: #999;
-    cursor: pointer;
-    transition: color 0.2s;
-  }
-  .close:hover {
-    color: #333;
-  }
+/* Стиль для модального окна */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+/* Контент модального окна */
+.modal-content {
+  position: relative;
+  background-color: #fff;
+  margin: 10% auto; /* Увеличен верхний отступ для лучшей читаемости */
+  padding: 30px 40px; /* Более просторные отступы */
+  border-radius: 12px;
+  max-width: 500px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  font-family: 'Poppins', sans-serif;
+  font-size: 18px; /* Увеличен размер шрифта */
+  line-height: 1.6; /* Для улучшенной читаемости текста */
+  text-align: center;
+}
+
+/* Стиль для закрывающей кнопки */
+.close {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 28px;
+  font-weight: bold;
+  color: #555;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.close:hover {
+  color: #000;
+}
 </style>
 </head>
 <body>
@@ -261,54 +268,35 @@
 <div id="orderModal" class="modal">
   <div class="modal-content">
     <div class="close" id="closeModal">&times;</div>
-    Заказ оформлен!
+    <p>Заказ оформлен!</p>
+    <p>Получить его можно в магазине "Все для спорта" и по адресу: <span id="pickup-address"></span></p>
   </div>
 </div>
 
 <script>
   // Показывать модальное окно
   function showModal() {
-    document.getElementById('orderModal').style.display = 'block';
-  }
-  // Закрывать модальное окно
-  function closeModal() {
-    document.getElementById('orderModal').style.display = 'none';
-  }
-  document.getElementById('closeModal').addEventListener('click', closeModal);
-  window.onclick = function(event) {
-    if (event.target == document.getElementById('orderModal')) {
-      closeModal();
-    }
-  }
-
-  // Обработка оформления заказа
-document.getElementById('pay-button').addEventListener('click', (e) => {
-  e.preventDefault(); // предотвращаем дефолтную отправку, чтобы установить сумму
-  const totalText = document.getElementById('total-price').innerText; // например, "Сумма к оплате:  1234 руб."
-  const match = totalText.match(/(\d+)/); // ищем число
-  const amount = match ? match[1] : '0';
-
-  document.getElementById('amount').value = amount;
-
-  // Теперь отправляем форму
-  document.getElementById('paymentForm').submit();
-
-  // Очищаем корзину и показываем окно, если нужно
-  localStorage.removeItem('cart');
-  renderCart();
-  showModal();
-});
-
-  // Обновление адреса (можно оставить пустым или реализовать)
-function updatePickupAddress() {
-  // Можно добавить логику для отображения выбранного адреса
+  document.getElementById('orderModal').style.display = 'block';
 }
 
+function closeModal() {
+  document.getElementById('orderModal').style.display = 'none';
+}
+
+document.getElementById('closeModal').addEventListener('click', closeModal);
+
+window.onclick = function(event) {
+  if (event.target === document.getElementById('orderModal')) {
+    closeModal();
+  }
+};
+
+// === Работа корзины ===
 function renderCart() {
   const container = document.getElementById('cart-container');
   container.innerHTML = '';
   const cart = JSON.parse(localStorage.getItem('cart')) || [];
-  
+
   if (cart.length === 0) {
     container.innerHTML = '<p style="text-align:center;">Ваша корзина пуста.</p>';
     document.getElementById('total-amount').textContent = '0';
@@ -316,7 +304,7 @@ function renderCart() {
   }
 
   let totalSum = 0;
-  
+
   cart.forEach(item => {
     const priceNumber = parseInt(item.price.replace(/\D/g, '')) || 0;
     const itemTotal = item.count * priceNumber;
@@ -324,7 +312,6 @@ function renderCart() {
 
     const div = document.createElement('div');
     div.className = 'cart-item';
-
     div.innerHTML = `
       <img src="${item.img}" alt="${item.name}">
       <div class="item-info">
@@ -341,7 +328,6 @@ function renderCart() {
       </div>
     `;
 
-    // Обработчики кнопок
     div.querySelector('.plus').addEventListener('click', e => changeQuantity(e, 1));
     div.querySelector('.minus').addEventListener('click', e => changeQuantity(e, -1));
     div.querySelector('.remove-btn').addEventListener('click', e => removeItem(e));
@@ -352,7 +338,6 @@ function renderCart() {
   document.getElementById('total-amount').textContent = totalSum;
 }
 
-// Изменение количества
 function changeQuantity(e, delta) {
   const name = e.target.dataset.name;
   const size = e.target.dataset.size;
@@ -366,7 +351,6 @@ function changeQuantity(e, delta) {
   }
 }
 
-// Удаление товара
 function removeItem(e) {
   const name = e.target.dataset.name;
   const size = e.target.dataset.size;
@@ -376,8 +360,31 @@ function removeItem(e) {
   renderCart();
 }
 
-// Инициализация корзины при загрузке страницы
-document.addEventListener('DOMContentLoaded', renderCart);
+// === Кнопка оплаты ===
+document.getElementById('pay-button').addEventListener('click', (e) => {
+  e.preventDefault();
+
+  const totalText = document.getElementById('total-price').innerText;
+  const match = totalText.match(/(\d+)/);
+  const amount = match ? match[1] : '0';
+  document.getElementById('amount').value = amount;
+
+  // Просто отправляем форму — модалка появится только после возврата
+  document.getElementById('paymentForm').submit();
+});
+
+// === Проверка URL при возврате ===
+document.addEventListener('DOMContentLoaded', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('order') === '1') {
+    localStorage.removeItem('cart'); // очищаем корзину
+    renderCart();                    // перерисовываем
+    showModal();                     // показываем модалку
+    history.replaceState(null, '', window.location.pathname); // убираем ?order=1
+  } else {
+    renderCart();
+  }
+});
 </script>
 
 </body>
