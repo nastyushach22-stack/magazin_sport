@@ -356,7 +356,7 @@ def create_payment(request):
             },
             "confirmation": {
                 "type": "redirect",
-                "return_url": "https://magazin-sport.onrender.com/success/"
+                "return_url": "https://magazin-sport.onrender.com/cart/"
             },
             "capture": True,
             "description": "Оплата заказа"
