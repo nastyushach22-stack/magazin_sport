@@ -101,36 +101,37 @@
   margin: 0 auto;
   position: relative; 
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-end; /* Выравниваем содержимое по правому краю */
   background: linear-gradient(to right, #ffffff, #ed457e); /* Градиент слева направо, более темный справа */
-  text-align: right;
-
-.checkout-btn {
-  display: block;
-  width: 200px;
-  margin: 30px auto 0;
-  padding: 15px;
-  background-color: #ed457e;
-  color: #fff;
-  border: none;
-  border-radius: 12px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-.checkout-btn:hover {
-  background-color: #d7416b;
-}
-
-/* Стиль для блока выбора пункта выдачи */
-.cart-page-container {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 20px;
-  box-sizing: border-box;
+  text-align: right; /* Выравниваем весь текст по правому краю внутри блока */
+  }
+  .checkout-btn {
+    display: block;
+    width: 200px;
+    margin: 30px auto 0;
+    padding: 15px;
+    background-color: #ed457e;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  .checkout-btn:hover {
+    background-color: #d7416b;
   }
 
-.pickup-wrapper {
+  /* Стиль для блока выбора пункта выдачи */
+  .cart-page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+
+  /* Стиль для блока выбора пункта выдачи */
+  .pickup-wrapper {
   width: 100%;
   display: flex;
   align-items: center;
@@ -138,10 +139,11 @@
   margin-bottom: 20px;
   font-family: 'Poppins', sans-serif;
   padding: 10px;
-  background-color: #fff;
+  background-color: #fff; /* белый фон для отделения */
   border-radius: 8px; /* скругление углов */
-  border: 1px solid #ddd;
-}
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* небольшой тень */
+  border: 1px solid #ddd; /* граница */
+  }
 
 .pickup-label {
   font-weight: 600;
@@ -155,7 +157,7 @@
   padding: 10px 14px;
   border-radius: 8px;
   border: 2px solid #b9b9b9ff;
-  background-color: #ffffff;
+  background-color: #ffffff; /* фон делается белым */
   font-family: 'Poppins', sans-serif;
   font-size: 14px;
   cursor: pointer;
@@ -273,7 +275,7 @@
 </div>
 
 <script>
-
+  // Показывать модальное окно
   function showModal() {
   document.getElementById('orderModal').style.display = 'block';
 }
@@ -283,11 +285,11 @@ function closeModal() {
 }
 function updatePickupAddress() {
     const select = document.getElementById('pickup-location');
-    const address = select.options[select.selectedIndex].text;
+    const address = select.options[select.selectedIndex].text; // берем текст выбранной опции
     document.getElementById('pickup-address').innerText = address;
   }
 
-
+  // Можно вызвать эту функцию при загрузке страницы, чтобы сразу показать выбранный адрес
   document.addEventListener('DOMContentLoaded', () => {
     updatePickupAddress();
   });
@@ -299,7 +301,7 @@ window.onclick = function(event) {
   }
 };
 
-// Корзина
+// === Работа корзины ===
 function renderCart() {
   const container = document.getElementById('cart-container');
   container.innerHTML = '';
@@ -368,7 +370,7 @@ function removeItem(e) {
   renderCart();
 }
 
-// Кнопка оплаты
+// === Кнопка оплаты ===
 document.getElementById('pay-button').addEventListener('click', (e) => {
   e.preventDefault();
 
@@ -377,7 +379,7 @@ document.getElementById('pay-button').addEventListener('click', (e) => {
   const amount = match ? match[1] : '0';
   document.getElementById('amount').value = amount;
 
-  // Сохраняем выбранный пункт выдачи
+  // 🏪 Сохраняем выбранный пункт выдачи
   const select = document.getElementById('pickup-location');
   const selectedAddress = select.options[select.selectedIndex].text; 
   localStorage.setItem('pickupAddress', selectedAddress);
@@ -386,14 +388,14 @@ document.getElementById('pay-button').addEventListener('click', (e) => {
   document.getElementById('paymentForm').submit();
 });
 
-// Проверка URL при возврате
+// === Проверка URL при возврате ===
 document.addEventListener('DOMContentLoaded', () => {
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.get('order') === '1') {
     localStorage.removeItem('cart'); // очищаем корзину
-    renderCart();
+    renderCart();                    // перерисовываем
 
-
+    // 🏪 Достаём адрес, который клиент выбрал до оплаты
     const savedAddress = localStorage.getItem('pickupAddress');
     if (savedAddress) {
       document.getElementById('pickup-address').innerText = savedAddress;
@@ -401,7 +403,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     showModal(); // показываем модалку
-    history.replaceState(null, '', window.location.pathname);
+    history.replaceState(null, '', window.location.pathname); // убираем ?order=1
   } else {
     renderCart();
   }
