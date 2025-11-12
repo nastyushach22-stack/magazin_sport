@@ -356,7 +356,7 @@ def create_payment(request):
             },
             "confirmation": {
                 "type": "redirect",
-                "return_url": "https://magazin-sport.onrender.com/cart/"
+                "return_url": "https://magazin-sport.onrender.com/cart/?order=1"
             },
             "capture": True,
             "description": "Оплата заказа"
@@ -364,5 +364,4 @@ def create_payment(request):
         return redirect(payment.confirmation.confirmation_url)
 
 def success(request):
-    # Эта страница просто перенаправит обратно на корзину с параметром
-    return redirect('/cart/?order=1')  # замените на актуальный URL вашей корзины
+    return redirect('/cart/?order=1')

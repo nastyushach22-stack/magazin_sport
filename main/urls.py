@@ -28,6 +28,4 @@ urlpatterns = [
     path('<str:category_slug>/<int:product_id>/', views.product_detail, name='product_detail'),
     #оплата
     path('pay/', create_payment, name='create_payment'),
-    path('success/', lambda r: HttpResponse("Оплата успешно завершена!"), name='success'),
-    path('success/', views.success, name='payment_success'),
 ]
