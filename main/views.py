@@ -330,7 +330,7 @@ def favorites(request):
 # Корзина
 def cart(request):
     return render(request, 'cart.html')
-
+# карточка товара
 def product_detail(request, category_slug, product_id):
     category_products = products_data.get(category_slug)
     if not category_products:

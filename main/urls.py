@@ -1,4 +1,3 @@
-#urls.py
 from django.urls import path
 from . import views
 from .views import create_payment
@@ -22,6 +21,7 @@ urlpatterns = [
     path('d_inventory/', views.d_inventory, name='d_inventory'),
     #избарнное
     path('favorites/', views.favorites, name='favorites'),
+    path('product/<slug:category_slug>/<int:product_id>/', views.product_detail, name='product_detail'),
     #корзина
     path('cart/', views.cart, name='cart'),
     # Страница товаров

@@ -179,6 +179,7 @@
         </div>
       `;
 
+    
       // Удаление из избранных
       card.querySelector('.favorite').addEventListener('click', () => {
         let favs = JSON.parse(localStorage.getItem('favorites')) || [];
@@ -239,6 +240,7 @@
     }
   }
 
+  
   document.addEventListener('DOMContentLoaded', () => {
     renderFavorites();
 

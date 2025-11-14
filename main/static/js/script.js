@@ -1,5 +1,4 @@
-// Можно добавить функционал для мобильных устройств или другого поведения
-// Например, по клику на пункте меню раскрывать подменю
+
 document.querySelectorAll('.dropdown').forEach(item => {
   item.addEventListener('click', () => {
     const submenu = item.querySelector('.submenu');
@@ -12,7 +11,6 @@ document.querySelectorAll('.dropdown').forEach(item => {
 });
 
 // добавление в избранное и изменения цвета
-// при загрузке страницы, установить цвет сердечка, если товар уже в избранных
 document.addEventListener('DOMContentLoaded', () => {
   // Обработчик для категории "Мужская обувь"
   const categoryShoesMen = document.querySelector('.category-shoes-men');

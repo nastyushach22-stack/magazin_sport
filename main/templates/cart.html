@@ -213,7 +213,7 @@
   position: relative;
   background-color: #fff;
   margin: 10% auto; /* Увеличен верхний отступ для лучшей читаемости */
-  padding: 30px 40px; /* Более просторные отступы */
+  padding: 30px 40px;
   border-radius: 12px;
   max-width: 500px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.3);
@@ -285,7 +285,7 @@ function closeModal() {
 }
 function updatePickupAddress() {
     const select = document.getElementById('pickup-location');
-    const address = select.options[select.selectedIndex].text; // берем текст выбранной опции
+    const address = select.options[select.selectedIndex].text;
     document.getElementById('pickup-address').innerText = address;
   }
 
@@ -301,7 +301,7 @@ window.onclick = function(event) {
   }
 };
 
-// === Работа корзины ===
+// Работа корзины
 function renderCart() {
   const container = document.getElementById('cart-container');
   container.innerHTML = '';
@@ -370,7 +370,7 @@ function removeItem(e) {
   renderCart();
 }
 
-// === Кнопка оплаты ===
+// Кнопка оплаты
 document.getElementById('pay-button').addEventListener('click', (e) => {
   e.preventDefault();
 
@@ -379,7 +379,7 @@ document.getElementById('pay-button').addEventListener('click', (e) => {
   const amount = match ? match[1] : '0';
   document.getElementById('amount').value = amount;
 
-  // 🏪 Сохраняем выбранный пункт выдачи
+  // Сохраняем выбранный пункт выдачи
   const select = document.getElementById('pickup-location');
   const selectedAddress = select.options[select.selectedIndex].text; 
   localStorage.setItem('pickupAddress', selectedAddress);
@@ -388,14 +388,13 @@ document.getElementById('pay-button').addEventListener('click', (e) => {
   document.getElementById('paymentForm').submit();
 });
 
-// === Проверка URL при возврате ===
+// Проверка URL при возврате
 document.addEventListener('DOMContentLoaded', () => {
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.get('order') === '1') {
     localStorage.removeItem('cart'); // очищаем корзину
     renderCart();                    // перерисовываем
 
-    // 🏪 Достаём адрес, который клиент выбрал до оплаты
     const savedAddress = localStorage.getItem('pickupAddress');
     if (savedAddress) {
       document.getElementById('pickup-address').innerText = savedAddress;
@@ -403,7 +402,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     showModal(); // показываем модалку
-    history.replaceState(null, '', window.location.pathname); // убираем ?order=1
+    history.replaceState(null, '', window.location.pathname);
   } else {
     renderCart();
   }
